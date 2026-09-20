@@ -1,6 +1,6 @@
 import 'todo/DataBase/local db/SQFLite db/sqflite_task_db.dart';
 import 'todo/add task/add_task_screen.dart';
-import 'todo/provider/task_provider.dart';
+import 'todo/state Management/provider/task_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 

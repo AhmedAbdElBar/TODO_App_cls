@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_r5_s2/todo/add%20task/add_card.dart';
-import 'package:flutter_r5_s2/todo/provider/task_provider.dart';
+import 'package:flutter_r5_s2/todo/state%20Management/provider/task_provider.dart';
 import 'package:flutter_r5_s2/todo/tasks%20screen/task_modle.dart';
 import 'package:flutter_r5_s2/todo/tasks%20screen/task_screen.dart';
 import 'package:provider/provider.dart';
@@ -15,12 +15,13 @@ class AddTaskScreen extends StatefulWidget {
 class _AddTaskScreenState extends State<AddTaskScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  
+
   @override
   void initState() {
     context.read<TaskProvider>().initTasks();
     super.initState();
   }
+
   @override
   void dispose() {
     _titleController.dispose();

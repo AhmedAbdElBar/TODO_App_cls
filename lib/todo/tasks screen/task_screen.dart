@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_r5_s2/todo/provider/task_provider.dart';
+import 'package:flutter_r5_s2/todo/state%20Management/provider/task_provider.dart';
 import 'package:flutter_r5_s2/todo/tasks%20screen/section_header.dart';
 import 'package:flutter_r5_s2/todo/tasks%20screen/task_card.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +55,7 @@ class TaskScreen extends StatelessWidget {
                               task: unCompletedTasks[index],
 
                               deleteFunc: () {
-                                taskProvider.rmoveFormList(
+                                taskProvider.removeTask(
                                   unCompletedTasks[index],
                                 );
                               },
@@ -105,9 +105,7 @@ class TaskScreen extends StatelessWidget {
                               task: completedTasks[index],
 
                               deleteFunc: () {
-                                taskProvider.rmoveFormList(
-                                  completedTasks[index],
-                                );
+                                taskProvider.removeTask(completedTasks[index]);
                               },
                               isCompleted: () {
                                 taskProvider.toggleIsCompleted(

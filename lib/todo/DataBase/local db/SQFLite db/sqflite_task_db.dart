@@ -27,7 +27,7 @@ class SqfliteTaskDb {
     await database.delete(tableName, where: "id = ?", whereArgs: [id]);
   }
 
-  Future<List<TaskModel>> getAllTasks() async {
+  Future<List<TaskModel>> getTasks() async {
     final List<Map<String, dynamic>> tasksMaps = await database.query(
       tableName,
     );
@@ -40,7 +40,7 @@ class SqfliteTaskDb {
     
   }
 
-  Future<void> clearAllTasks() async {
+  Future<void> removeAllTasks() async {
     await database.delete(tableName);
   }
 

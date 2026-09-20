@@ -5,7 +5,7 @@ import 'adapter.dart';
 
 class HiveTasksDb {
   static const String boxName = "tasks";
-  static Future<void> init() async {
+  Future<void> init() async {
     await Hive.initFlutter();
     if (!Hive.isAdapterRegistered(Adapter().typeId)) {
       Hive.registerAdapter(Adapter());
@@ -15,20 +15,20 @@ class HiveTasksDb {
     }
   }
 
-  static Future<void> addOrUpdateTask(TaskModel task) async {
+  Future<void> addOrUpdateTask(TaskModel task) async {
     await Hive.box<TaskModel>(boxName).put(task.id, task);
   }
 
-  static Future<void> removeTask(String id) async {
+  Future<void> removeTask(String id) async {
     await Hive.box<TaskModel>(boxName).delete(id);
   }
 
-  static Future<List<TaskModel>> getAllTasks() async {
+  Future<List<TaskModel>> getTasks() async {
     final box = Hive.box<TaskModel>('tasks');
     return [...box.values];
   }
 
-  static Future<void> removeAllTasks() async {
+  Future<void> removeAllTasks() async {
     await Hive.box<TaskModel>(boxName).clear();
   }
 }

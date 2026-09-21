@@ -38,9 +38,10 @@ class TasksCubit extends Cubit<List<TaskModel>> {
     db.removeAllTasks(tasks);
   }
 
-  void isCompleted(TaskModel task) {
+  void toggleIsCompleted(TaskModel task) {
     task.isCompleted = !task.isCompleted;
     emit([...state]);
-    db.addTask(task);
+    db.updateTask(task);//for cubit
+    // db.addTask(task); for provider
   }
 }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_r5_s2/todo/add%20task/add_card.dart';
-import 'package:flutter_r5_s2/todo/state%20Management/provider/task_provider.dart';
 import 'package:flutter_r5_s2/todo/tasks%20screen/task_modle.dart';
 import 'package:flutter_r5_s2/todo/tasks%20screen/task_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_r5_s2/todo/state%20Management/cubit/task_cubit.dart';
+
+// import 'package:flutter_r5_s2/todo/state%20Management/provider/task_provider.dart';
+// import 'package:provider/provider.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -18,8 +21,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   void initState() {
-    context.read<TaskProvider>().initTasks();
     super.initState();
+    // context.read<TaskProvider>().initTasks();
+    context.read<TasksCubit>().loadTasks();
   }
 
   @override
@@ -31,6 +35,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final taskCubit = context.read<TasksCubit>();
+    // final taskProvider = context.read<TaskProvider>();
     return Scaffold(
       backgroundColor: Color(0xFFEFF3FB),
       appBar: AppBar(
@@ -60,7 +66,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 titleController: _titleController,
                 descriptionController: _descriptionController,
                 func: () {
-                  context.read<TaskProvider>().addToList(
+                  if (_titleController.text.trim().isEmpty ||
+                      _descriptionController.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Please enter a task title and description',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+                  taskCubit.addTask(
                     TaskModel(
                       id: DateTime.now().millisecondsSinceEpoch.toString(),
                       title: _titleController.text.trim(),
@@ -86,10 +103,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 child: Column(
                   children: [
-                    Consumer<TaskProvider>(
-                      builder: (context, taskProvider, child) {
+                    // Consumer<TaskProvider>(
+                    //   builder: (context, taskProvider, child) {
+                    BlocBuilder<TasksCubit, List<TaskModel>>(
+                      builder: (context, state) {
                         return Text(
-                          '${taskProvider.tasks.length}',
+                          '${state.length}',
                           style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -117,6 +136,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
         child: OutlinedButton.icon(
           onPressed: () {
+            taskCubit.loadTasks();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => TaskScreen()),

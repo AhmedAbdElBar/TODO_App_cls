@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_r5_s2/todo/state%20Management/provider/task_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_r5_s2/todo/state%20Management/cubit/task_cubit.dart';
 import 'package:flutter_r5_s2/todo/tasks%20screen/section_header.dart';
 import 'package:flutter_r5_s2/todo/tasks%20screen/task_card.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_r5_s2/todo/tasks%20screen/task_modle.dart';
+// import 'package:flutter_r5_s2/todo/state%20Management/provider/task_provider.dart';
+// import 'package:provider/provider.dart';
 
 class TaskScreen extends StatelessWidget {
   const TaskScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final tasksProvider = context.read<TaskProvider>();
+    // final tasksProvider = context.read<TaskProvider>();
+    final tasksCubit = context.read<TasksCubit>();
 
     return Scaffold(
       backgroundColor: Color(0xFFF3F6FC),
@@ -30,9 +34,11 @@ class TaskScreen extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: Consumer<TaskProvider>(
-                builder: (context, taskProvider, child) {
-                  final unCompletedTasks = tasksProvider.tasks
+              // child: Consumer<TaskProvider>(
+              //   builder: (context, taskProvider, child) {
+              child: BlocBuilder<TasksCubit, List<TaskModel>>(
+                builder: (context, tasks) {
+                  final unCompletedTasks = tasksCubit.state
                       .where((task) => !task.isCompleted)
                       .toList();
 
@@ -55,12 +61,12 @@ class TaskScreen extends StatelessWidget {
                               task: unCompletedTasks[index],
 
                               deleteFunc: () {
-                                taskProvider.removeTask(
+                                tasksCubit.removeTask(
                                   unCompletedTasks[index],
                                 );
                               },
                               isCompleted: () {
-                                taskProvider.toggleIsCompleted(
+                                tasksCubit.toggleIsCompleted(
                                   unCompletedTasks[index],
                                 );
                               },
@@ -81,9 +87,11 @@ class TaskScreen extends StatelessWidget {
             const SizedBox(height: 12),
 
             Expanded(
-              child: Consumer<TaskProvider>(
-                builder: (context, taskProvider, child) {
-                  final completedTasks = tasksProvider.tasks
+              // child: Consumer<TaskProvider>(
+              //   builder: (context, taskProvider, child) {
+              child: BlocBuilder<TasksCubit, List<TaskModel>>(
+                builder: (context, state) {
+                  final completedTasks = tasksCubit.state
                       .where((task) => task.isCompleted)
                       .toList();
                   return Column(
@@ -105,10 +113,10 @@ class TaskScreen extends StatelessWidget {
                               task: completedTasks[index],
 
                               deleteFunc: () {
-                                taskProvider.removeTask(completedTasks[index]);
+                                tasksCubit.removeTask(completedTasks[index]);
                               },
                               isCompleted: () {
-                                taskProvider.toggleIsCompleted(
+                                tasksCubit.toggleIsCompleted(
                                   completedTasks[index],
                                 );
                               },
@@ -130,7 +138,7 @@ class TaskScreen extends StatelessWidget {
         foregroundColor: Colors.white,
         elevation: 4,
         onPressed: () {
-          tasksProvider.clearAll();
+          tasksCubit.removeAllTasks();
         },
         child: const Icon(Icons.clear_all_rounded, size: 26),
       ),

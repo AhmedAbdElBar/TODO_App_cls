@@ -19,11 +19,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
+  get taskCubit => context.read<TasksCubit>();
+
   @override
   void initState() {
     super.initState();
     // context.read<TaskProvider>().initTasks();
-    context.read<TasksCubit>().loadTasks();
+    taskCubit;
   }
 
   @override
@@ -35,7 +37,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final taskCubit = context.read<TasksCubit>();
     // final taskProvider = context.read<TaskProvider>();
     return Scaffold(
       backgroundColor: Color(0xFFEFF3FB),

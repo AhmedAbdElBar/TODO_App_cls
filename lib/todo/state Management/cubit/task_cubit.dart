@@ -28,7 +28,7 @@ class TasksCubit extends Cubit<List<TaskModel>> {
       final newList = [...state];
       newList.remove(task);
       emit(newList);
-      db.removeTask(task.id);
+      db.removeTask(task.id!);
     }
   }
 

@@ -22,7 +22,7 @@ class Adapter extends TypeAdapter<TaskModel> {
 
   @override
   void write(BinaryWriter writer, TaskModel obj) {
-    writer.writeString(obj.id);
+    writer.writeString(obj.id!);
     writer.writeString(obj.title);
     writer.writeString(obj.subtitle);
     writer.writeBool(obj.isCompleted);

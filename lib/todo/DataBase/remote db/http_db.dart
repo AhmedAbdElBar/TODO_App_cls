@@ -59,10 +59,21 @@ class HttpDb {
     }
   }
 
-  Future<bool> removeAllTasks(List<TaskModel> tasks) async {
-    for (var task in tasks) {
-      await removeTask(task.id!);
+  Future<bool> removeAllTasks() async {
+    final tasks = await getTasks() ?? [];
+
+    for (final task in tasks) {
+      final id = task.id;
+
+      if (id != null) {
+        final success = await removeTask(id);
+
+        if (!success) {
+          return false;
+        }
+      }
     }
+
     return true;
   }
 }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_r5_s2/todo/state%20Management/cubit/task_cubit.dart';
+
+import '../state Management/cubit/task_state.dart';
 
 class AddCard extends StatelessWidget {
   final TextEditingController _titleController;
@@ -89,31 +93,65 @@ class AddCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               height: 48,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  if (_titleController.text.trim().isEmpty ||
-                      _descriptionController.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("please add the title and description"),
-                      ),
-                    );
-                    return;
+              child: BlocListener<TasksCubit, TaskState>(
+                listener: (context, state) {
+                  if (state is TasksSuccess) {
+                    _titleController.clear();
+                    _descriptionController.clear();
                   }
 
-                  _func();
-
-                  _titleController.clear();
-                  _descriptionController.clear();
+                  if (state is TasksError) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(state.error)));
+                  }
                 },
-                icon: const Icon(Icons.add),
-                label: const Text("Add Task", style: TextStyle(fontSize: 16)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF2563EB),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+
+                child: BlocBuilder<TasksCubit, TaskState>(
+                  builder: (context, state) {
+                    final isLoading = state is TasksLoading;
+
+                    return ElevatedButton(
+                      onPressed: isLoading
+                          ? null
+                          : () {
+                              if (_titleController.text.trim().isEmpty ||
+                                  _descriptionController.text.trim().isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Please add the title and description",
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              _func();
+                            },
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2563EB),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+
+                      child: isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add),
+                                Text(
+                                  "Add Task",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                    );
+                  },
                 ),
               ),
             ),

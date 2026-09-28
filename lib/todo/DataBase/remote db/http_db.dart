@@ -15,6 +15,9 @@ class HttpDb {
       headers: {"Content-Type": "application/json"},
     );
     if (response.statusCode == 200 || response.statusCode == 201) {
+      final taskMap = jsonDecode(response.body);
+      final sevedTask = TaskModel.fromMap(taskMap);
+      task.id = sevedTask.id;
       return true;
     } else {
       return false;
@@ -59,8 +62,7 @@ class HttpDb {
     }
   }
 
-  Future<bool> removeAllTasks() async {
-    final tasks = await getTasks() ?? [];
+  Future<bool> removeAllTasks(List<TaskModel>tasks) async {
 
     for (final task in tasks) {
       final id = task.id;

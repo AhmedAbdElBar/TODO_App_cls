@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_r5_s2/todo/state%20Management/cubit/task_cubit.dart';
+import 'package:flutter_r5_s2/todo/state%20Management/cubit/task_state.dart';
 import 'package:flutter_r5_s2/todo/tasks%20screen/section_header.dart';
 import 'package:flutter_r5_s2/todo/tasks%20screen/task_card.dart';
-import 'package:flutter_r5_s2/todo/tasks%20screen/task_modle.dart';
+
 // import 'package:flutter_r5_s2/todo/state%20Management/provider/task_provider.dart';
 // import 'package:provider/provider.dart';
 
@@ -36,46 +37,55 @@ class TaskScreen extends StatelessWidget {
             Expanded(
               // child: Consumer<TaskProvider>(
               //   builder: (context, taskProvider, child) {
-              child: BlocBuilder<TasksCubit, List<TaskModel>>(
-                builder: (context, tasks) {
-                  final unCompletedTasks = tasksCubit.state
-                      .where((task) => !task.isCompleted)
-                      .toList();
+              child: BlocBuilder<TasksCubit, TaskState>(
+                builder: (context, state) {
+                  if (state is TasksLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state is TasksError) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+                  }
+                  if (state is TasksSuccess) {
+                    final unCompletedTasks = state.tasks
+                        .where((task) => !task.isCompleted)
+                        .toList();
 
-                  return Column(
-                    children: [
-                      SectionHeader(
-                        icon: Icons.menu_open_rounded,
-                        title: 'UnCompleted Tasks',
-                        count: unCompletedTasks.length,
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      Expanded(
-                        child: ListView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: unCompletedTasks.length,
-                          itemBuilder: (context, index) {
-                            return TaskCard(
-                              task: unCompletedTasks[index],
-
-                              deleteFunc: () {
-                                tasksCubit.removeTask(
-                                  unCompletedTasks[index],
-                                );
-                              },
-                              isCompleted: () {
-                                tasksCubit.toggleIsCompleted(
-                                  unCompletedTasks[index],
-                                );
-                              },
-                            );
-                          },
+                    return Column(
+                      children: [
+                        SectionHeader(
+                          icon: Icons.menu_open_rounded,
+                          title: 'UnCompleted Tasks',
+                          count: unCompletedTasks.length,
                         ),
-                      ),
-                    ],
-                  );
+
+                        const SizedBox(height: 10),
+
+                        Expanded(
+                          child: ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: unCompletedTasks.length,
+                            itemBuilder: (context, index) {
+                              return TaskCard(
+                                task: unCompletedTasks[index],
+
+                                deleteFunc: () {
+                                  tasksCubit.removeTask(
+                                    unCompletedTasks[index],
+                                  );
+                                },
+                                isCompleted: () {
+                                  tasksCubit.toggleIsCompleted(
+                                    unCompletedTasks[index],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return const SizedBox();
                 },
               ),
             ),
@@ -89,43 +99,54 @@ class TaskScreen extends StatelessWidget {
             Expanded(
               // child: Consumer<TaskProvider>(
               //   builder: (context, taskProvider, child) {
-              child: BlocBuilder<TasksCubit, List<TaskModel>>(
+              child: BlocBuilder<TasksCubit, TaskState>(
                 builder: (context, state) {
-                  final completedTasks = tasksCubit.state
-                      .where((task) => task.isCompleted)
-                      .toList();
-                  return Column(
-                    children: [
-                      SectionHeader(
-                        icon: Icons.task_alt_rounded,
-                        title: 'Completed Tasks',
-                        count: completedTasks.length,
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      Expanded(
-                        child: ListView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: completedTasks.length,
-                          itemBuilder: (context, index) {
-                            return TaskCard(
-                              task: completedTasks[index],
-
-                              deleteFunc: () {
-                                tasksCubit.removeTask(completedTasks[index]);
-                              },
-                              isCompleted: () {
-                                tasksCubit.toggleIsCompleted(
-                                  completedTasks[index],
-                                );
-                              },
-                            );
-                          },
+                  if (state is TasksLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state is TasksError) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(state.error)));
+                  }
+                  if (state is TasksSuccess) {
+                    final completedTasks = state.tasks
+                        .where((task) => task.isCompleted)
+                        .toList();
+                    return Column(
+                      children: [
+                        SectionHeader(
+                          icon: Icons.task_alt_rounded,
+                          title: 'Completed Tasks',
+                          count: completedTasks.length,
                         ),
-                      ),
-                    ],
-                  );
+
+                        const SizedBox(height: 10),
+
+                        Expanded(
+                          child: ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: completedTasks.length,
+                            itemBuilder: (context, index) {
+                              return TaskCard(
+                                task: completedTasks[index],
+
+                                deleteFunc: () {
+                                  tasksCubit.removeTask(completedTasks[index]);
+                                },
+                                isCompleted: () {
+                                  tasksCubit.toggleIsCompleted(
+                                    completedTasks[index],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return const SizedBox();
                 },
               ),
             ),

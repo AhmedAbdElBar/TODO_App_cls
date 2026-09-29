@@ -41,16 +41,19 @@ class TaskScreen extends StatelessWidget {
               ).showSnackBar(SnackBar(content: Text(state.error)));
             }
 
-            if (state is TasksSuccess) {
-              final unCompletedTasks = state.tasks
+            if (state is TasksSuccess||state is TasksLoading) {
+              final tasks = state is TasksSuccess
+                  ? state.tasks
+                  : (state as TasksLoading).tasks;
+              final unCompletedTasks = tasks
                   .where((task) => !task.isCompleted)
                   .toList();
 
-              final completedTasks = state.tasks
+              final completedTasks = tasks
                   .where((task) => task.isCompleted)
                   .toList();
 
-              return state.tasks.isEmpty
+              return tasks.isEmpty
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +61,7 @@ class TaskScreen extends StatelessWidget {
                           Icon(
                             Icons.hourglass_empty_rounded,
                             size: 100,
-                            color: Color(0xFF00265C),
+                            color: Colors.grey,
                           ),
                           SizedBox(height: 20),
                           Text(
@@ -66,7 +69,7 @@ class TaskScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF00265C),
+                              color: Colors.grey,
                             ),
                           ),
                         ],

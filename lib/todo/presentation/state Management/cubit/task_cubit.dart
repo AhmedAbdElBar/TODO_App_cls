@@ -12,11 +12,11 @@ class TasksCubit extends Cubit<TaskState> {
   // final HiveTasksDb db = HiveTasksDb();
   final HttpDb db = HttpDb();
   //-------------------------
-  /// get all tasks 
+  /// get all tasks
   //-------------------------
   Future<void> loadTasks() async {
     // await db.init();
-    emit(TasksLoading());
+    emit(TasksLoading([]));
     try {
       final tasks = await db.getTasks() ?? [];
       emit(TasksSuccess(tasks));
@@ -24,6 +24,7 @@ class TasksCubit extends Cubit<TaskState> {
       emit(TasksError(e.toString()));
     }
   }
+
   //-------------------------
   /// add new task
   //-------------------------
@@ -32,7 +33,7 @@ class TasksCubit extends Cubit<TaskState> {
       if (state is TasksSuccess) {
         final currentTasks = (state as TasksSuccess).tasks;
 
-        emit(TasksLoading());
+        emit(TasksLoading(currentTasks));
 
         final success = await db.addTask(task);
 
@@ -46,6 +47,26 @@ class TasksCubit extends Cubit<TaskState> {
       emit(TasksError(e.toString()));
     }
   }
+
+  //-------------------------
+  /// toggle is completed value
+  //-------------------------
+  Future<void> toggleIsCompleted(TaskModel task) async {
+    try {
+      if (state is TasksSuccess) {
+        final currentTasks = (state as TasksSuccess).tasks;
+
+        task.isCompleted = !task.isCompleted;
+        emit(TasksLoading(currentTasks));
+        await db.updateTask(task);
+
+        emit(TasksSuccess([...currentTasks]));
+      }
+    } catch (e) {
+      emit(TasksError(e.toString()));
+    }
+  }
+
   //-------------------------
   /// remove task by id
   //-------------------------
@@ -53,7 +74,7 @@ class TasksCubit extends Cubit<TaskState> {
     try {
       if (state is TasksSuccess) {
         final currentTasks = (state as TasksSuccess).tasks;
-        emit(TasksLoading());
+        emit(TasksLoading(currentTasks));
 
         final success = await db.removeTask(task.id!);
         final updatedTasks = currentTasks
@@ -69,35 +90,20 @@ class TasksCubit extends Cubit<TaskState> {
       emit(TasksError(e.toString()));
     }
   }
+
   //-------------------------
   /// clear all tasks
   //-------------------------
   Future<void> removeAllTasks() async {
     try {
       if (state is TasksSuccess) {
-        final tasks = [...(state as TasksSuccess).tasks];
-        emit(TasksLoading());
-        await db.removeAllTasks(tasks);
+        final currentTasks = [...(state as TasksSuccess).tasks];
+        emit(TasksLoading(currentTasks));
+        await db.removeAllTasks(currentTasks);
         emit(TasksSuccess([]));
       }
     } catch (e) {
       emit(TasksError(e.toString()));
     }
-  }
-  //-------------------------
-  /// toggle is completed value
-  //-------------------------
-  Future<void> toggleIsCompleted(TaskModel task) async {
-    task.isCompleted = !task.isCompleted;
-    emit(TasksLoading());
-
-    try {
-      await db.updateTask(task);
-      final tasks = await db.getTasks() ?? [];
-      emit(TasksSuccess([...tasks]));
-    } catch (e) {
-      emit(TasksError(e.toString()));
-    } //for cubit
-    // db.addTask(task); for provider
   }
 }

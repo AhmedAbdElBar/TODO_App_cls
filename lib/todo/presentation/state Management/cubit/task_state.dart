@@ -4,7 +4,11 @@ abstract class TaskState {}
 
 class TasksInitial extends TaskState {}
 
-class TasksLoading extends TaskState {}
+class TasksLoading extends TaskState {
+  final List<TaskModel> tasks;
+
+  TasksLoading(this.tasks);
+}
 
 class TasksSuccess extends TaskState {
   final List<TaskModel> tasks;

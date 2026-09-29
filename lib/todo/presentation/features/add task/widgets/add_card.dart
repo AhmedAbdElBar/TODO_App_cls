@@ -110,7 +110,6 @@ class AddCard extends StatelessWidget {
                 child: BlocBuilder<TasksCubit, TaskState>(
                   builder: (context, state) {
                     final isLoading = state is TasksLoading;
-
                     return ElevatedButton(
                       onPressed: isLoading
                           ? null
@@ -138,18 +137,32 @@ class AddCard extends StatelessWidget {
                         ),
                       ),
 
-                      child: isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.add),
-                                Text(
-                                  "Add Task",
-                                  style: TextStyle(fontSize: 16),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: isLoading
+                            ? const SizedBox(
+                                key: ValueKey('loading'),
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
                                 ),
-                              ],
-                            ),
+                              )
+                            : const Row(
+                                key: ValueKey('add'),
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.add, size: 22),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Add Task",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                      ),
                     );
                   },
                 ),

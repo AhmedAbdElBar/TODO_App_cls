@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_r5_s2/todo/Data/task_modle.dart';
+import 'package:flutter_r5_s2/todo/presentation/features/tasks%20screen/widgets/show_alert_window.dart';
 
 class TaskCard extends StatelessWidget {
   final TaskModel task;
@@ -72,7 +73,12 @@ class TaskCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              onPressed: deleteFunc,
+              onPressed: () => showAlertWindow(
+                context,
+                "Remove Task",
+                "Are you sure?",
+                deleteFunc,
+              ),
               tooltip: 'Delete',
 
               icon: const Icon(Icons.delete_outline_rounded, color: Colors.red),

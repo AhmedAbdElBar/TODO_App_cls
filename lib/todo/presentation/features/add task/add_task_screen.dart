@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_r5_s2/todo/presentation/state%20Management/cubit/task_state.dart';
+import 'package:flutter_r5_s2/todo/presentation/features/add%20task/widgets/tasks_added_card.dart';
 import 'package:flutter_r5_s2/todo/Data/task_modle.dart';
 import 'package:flutter_r5_s2/todo/presentation/features/tasks%20screen/task_screen.dart';
 import 'package:flutter_r5_s2/todo/presentation/state%20Management/cubit/task_cubit.dart';
@@ -21,7 +21,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  get taskCubit => context.read<TasksCubit>();
+  dynamic get taskCubit => context.read<TasksCubit>();
 
   @override
   void initState() {
@@ -42,6 +42,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     // final taskProvider = context.read<TaskProvider>();
     return Scaffold(
       backgroundColor: Color(0xFFEFF3FB),
+      //--------------------------
+      /// AppBar
+      //--------------------------
       appBar: AppBar(
         title: const Text(
           "Add New Task",
@@ -51,6 +54,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         backgroundColor: Color(0xFF0D1B4C),
         foregroundColor: Colors.white,
       ),
+      //--------------------------
+      /// Body
+      //--------------------------
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -65,6 +71,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 style: TextStyle(fontSize: 15, color: Colors.grey),
               ),
               const SizedBox(height: 10),
+              //--------------------------
+              /// added card
+              //--------------------------
               AddCard(
                 titleController: _titleController,
                 descriptionController: _descriptionController,
@@ -82,7 +91,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   }
                   taskCubit.addTask(
                     TaskModel(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(),
                       title: _titleController.text.trim(),
                       subtitle: _descriptionController.text.trim(),
                     ),
@@ -90,60 +98,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 },
               ),
               const SizedBox(height: 25),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                decoration: BoxDecoration(
-                  color: Color(0xFF0D1B4C),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0xFF0D1B4C).withOpacity(0.25),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    // Consumer<TaskProvider>(
-                    //   builder: (context, taskProvider, child) {
-                    BlocBuilder<TasksCubit, TaskState>(
-                      builder: (context, state) {
-                        if (state is TasksLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        if (state is TasksError) {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(state.error)));
-                        }
-                        if (state is TasksSuccess) {
-                          return Text(
-                            '${state.tasks.length}',
-                            style: const TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          );
-                        }
-                        return const SizedBox();
-                      },
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "Tasks Added",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white.withOpacity(0.75),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              //--------------------------
+              /// Tasks added count card
+              //--------------------------
+              TasksAddedCard(),
             ],
           ),
         ),

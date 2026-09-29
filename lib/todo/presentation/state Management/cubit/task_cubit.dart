@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_r5_s2/todo/DataBase/remote%20db/http_db.dart';
-import 'package:flutter_r5_s2/todo/state%20Management/cubit/task_state.dart';
-import 'package:flutter_r5_s2/todo/tasks%20screen/task_modle.dart';
+import 'package:flutter_r5_s2/todo/Data/remote%20db/http_db.dart';
+import 'package:flutter_r5_s2/todo/presentation/state%20Management/cubit/task_state.dart';
+import 'package:flutter_r5_s2/todo/Data/task_modle.dart';
 
 // import '../../DataBase/local db/hive db/hive_tasks_db.dart';
 
@@ -11,6 +11,9 @@ class TasksCubit extends Cubit<TaskState> {
   }
   // final HiveTasksDb db = HiveTasksDb();
   final HttpDb db = HttpDb();
+  //-------------------------
+  /// get all tasks 
+  //-------------------------
   Future<void> loadTasks() async {
     // await db.init();
     emit(TasksLoading());
@@ -21,7 +24,9 @@ class TasksCubit extends Cubit<TaskState> {
       emit(TasksError(e.toString()));
     }
   }
-
+  //-------------------------
+  /// add new task
+  //-------------------------
   Future<void> addTask(TaskModel task) async {
     try {
       if (state is TasksSuccess) {
@@ -41,7 +46,9 @@ class TasksCubit extends Cubit<TaskState> {
       emit(TasksError(e.toString()));
     }
   }
-
+  //-------------------------
+  /// remove task by id
+  //-------------------------
   Future<void> removeTask(TaskModel task) async {
     try {
       if (state is TasksSuccess) {
@@ -62,12 +69,14 @@ class TasksCubit extends Cubit<TaskState> {
       emit(TasksError(e.toString()));
     }
   }
-
+  //-------------------------
+  /// clear all tasks
+  //-------------------------
   Future<void> removeAllTasks() async {
-    emit(TasksLoading());
     try {
       if (state is TasksSuccess) {
         final tasks = [...(state as TasksSuccess).tasks];
+        emit(TasksLoading());
         await db.removeAllTasks(tasks);
         emit(TasksSuccess([]));
       }
@@ -75,7 +84,9 @@ class TasksCubit extends Cubit<TaskState> {
       emit(TasksError(e.toString()));
     }
   }
-
+  //-------------------------
+  /// toggle is completed value
+  //-------------------------
   Future<void> toggleIsCompleted(TaskModel task) async {
     task.isCompleted = !task.isCompleted;
     emit(TasksLoading());

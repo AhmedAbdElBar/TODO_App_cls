@@ -1,7 +1,7 @@
-import 'todo/DataBase/local db/SQFLite db/sqflite_task_db.dart';
-import 'todo/state Management/cubit/task_cubit.dart';
+import 'todo/Data/local db/SQFLite db/sqflite_task_db.dart';
+import 'todo/presentation/features/add task/add_task_screen.dart';
+import 'todo/presentation/state Management/cubit/task_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'todo/add task/add_task_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 

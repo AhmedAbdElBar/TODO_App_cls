@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:flutter_r5_s2/todo/tasks%20screen/task_modle.dart';
+import 'package:flutter_r5_s2/todo/Data/task_modle.dart';
 
 class HttpDb {
   static const String baseUrl =
       "https://6aaf2a6eee9c55c910bf38cc.mockapi.io/tasks_management/";
-
+  
+  //--------------------------
+  /// add new task to api
+  //--------------------------
   Future<bool> addTask(TaskModel task) async {
     final taskMap = task.toMap();
     final taskJson = jsonEncode(taskMap);
@@ -23,7 +26,9 @@ class HttpDb {
       return false;
     }
   }
-
+  //--------------------------
+  /// toggle task state in api
+  //--------------------------
   Future<bool> updateTask(TaskModel task) async {
     final taskMap = task.toMap();
     final taskJson = jsonEncode(taskMap);
@@ -38,7 +43,9 @@ class HttpDb {
       return false;
     }
   }
-
+  //--------------------------
+  /// get all tasks form api
+  //--------------------------
   Future<List<TaskModel>?> getTasks() async {
     final response = await get(Uri.parse("$baseUrl/tasks"));
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -52,7 +59,9 @@ class HttpDb {
       return null;
     }
   }
-
+  //--------------------------
+  /// remove task form api by id 
+  //--------------------------
   Future<bool> removeTask(String id) async {
     final response = await delete(Uri.parse("$baseUrl/tasks/$id"));
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -61,7 +70,9 @@ class HttpDb {
       return false;
     }
   }
-
+  //--------------------------
+  /// clear all tasks form api
+  //--------------------------
   Future<bool> removeAllTasks(List<TaskModel>tasks) async {
 
     for (final task in tasks) {

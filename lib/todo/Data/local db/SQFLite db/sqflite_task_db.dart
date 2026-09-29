@@ -1,4 +1,4 @@
-import 'package:flutter_r5_s2/todo/tasks%20screen/task_modle.dart';
+import 'package:flutter_r5_s2/todo/Data/task_modle.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SqfliteTaskDb {

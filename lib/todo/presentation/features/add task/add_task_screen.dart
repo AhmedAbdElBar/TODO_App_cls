@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_r5_s2/todo/add%20task/add_card.dart';
-import 'package:flutter_r5_s2/todo/state%20Management/cubit/task_state.dart';
-import 'package:flutter_r5_s2/todo/tasks%20screen/task_modle.dart';
-import 'package:flutter_r5_s2/todo/tasks%20screen/task_screen.dart';
-import 'package:flutter_r5_s2/todo/state%20Management/cubit/task_cubit.dart';
+import 'package:flutter_r5_s2/todo/presentation/state%20Management/cubit/task_state.dart';
+import 'package:flutter_r5_s2/todo/Data/task_modle.dart';
+import 'package:flutter_r5_s2/todo/presentation/features/tasks%20screen/task_screen.dart';
+import 'package:flutter_r5_s2/todo/presentation/state%20Management/cubit/task_cubit.dart';
+
+import 'widgets/add_card.dart';
 
 // import 'package:flutter_r5_s2/todo/state%20Management/provider/task_provider.dart';
 // import 'package:provider/provider.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_r5_s2/todo/state%20Management/cubit/task_cubit.dart';
+import 'package:flutter_r5_s2/todo/presentation/state%20Management/cubit/task_cubit.dart';
 
-import '../state Management/cubit/task_state.dart';
+import '../../../state Management/cubit/task_state.dart';
 
 class AddCard extends StatelessWidget {
   final TextEditingController _titleController;

@@ -7,6 +7,7 @@ import '../../../state Management/cubit/task_state.dart';
 void showAlertWindow(
   BuildContext context,
   String title,
+  String buttom,
   String content,
   VoidCallback deleteFunc,
 ) {
@@ -32,9 +33,19 @@ void showAlertWindow(
             final isLoading = state is TasksLoading;
 
             return AlertDialog(
-              title: Text(title),
+              backgroundColor: Colors.white,
+              title: Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF00265C),
+                ),
+              ),
 
-              content:Text(content),
+              content: Text(
+                content,
+                style: TextStyle(color: Color(0xFF00265C)),
+              ),
 
               actions: [
                 if (!isLoading)
@@ -64,7 +75,7 @@ void showAlertWindow(
                             strokeWidth: 2,
                           ),
                         )
-                      : const Text("Remove"),
+                      : Text(buttom),
                 ),
               ],
             );

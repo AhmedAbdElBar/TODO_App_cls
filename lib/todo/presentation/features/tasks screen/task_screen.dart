@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_r5_s2/todo/presentation/features/tasks%20screen/widgets/show_alert_window.dart';
 import 'package:flutter_r5_s2/todo/presentation/state%20Management/cubit/task_cubit.dart';
 import 'package:flutter_r5_s2/todo/presentation/state%20Management/cubit/task_state.dart';
 import 'package:flutter_r5_s2/todo/presentation/features/tasks%20screen/widgets/section_header.dart';
@@ -32,125 +33,146 @@ class TaskScreen extends StatelessWidget {
 
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Expanded(
-              // child: Consumer<TaskProvider>(
-              //   builder: (context, taskProvider, child) {
-              child: BlocBuilder<TasksCubit, TaskState>(
-                builder: (context, state) {
-                  if (state is TasksLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is TasksError) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
-                  }
-                  if (state is TasksSuccess) {
-                    final unCompletedTasks = state.tasks
-                        .where((task) => !task.isCompleted)
-                        .toList();
+        child: BlocBuilder<TasksCubit, TaskState>(
+          builder: (context, state) {
+            if (state is TasksError) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.error)));
+            }
 
-                    return Column(
+            if (state is TasksSuccess) {
+              final unCompletedTasks = state.tasks
+                  .where((task) => !task.isCompleted)
+                  .toList();
+
+              final completedTasks = state.tasks
+                  .where((task) => task.isCompleted)
+                  .toList();
+
+              return state.tasks.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.hourglass_empty_rounded,
+                            size: 100,
+                            color: Color(0xFF00265C),
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            "No Tasks Yet!",
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF00265C),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Column(
                       children: [
-                        SectionHeader(
-                          icon: Icons.menu_open_rounded,
-                          title: 'UnCompleted Tasks',
-                          count: unCompletedTasks.length,
+                        Expanded(
+                          // child: Consumer<TaskProvider>(
+                          //   builder: (context, taskProvider, child) {
+                          child: Column(
+                            children: [
+                              SectionHeader(
+                                icon: Icons.menu_open_rounded,
+                                title: 'UnCompleted Tasks',
+                                count: unCompletedTasks.length,
+                              ),
+
+                              const SizedBox(height: 10),
+
+                              unCompletedTasks.isEmpty
+                                  ? Center(child: Text("no Tasks yet"))
+                                  : Expanded(
+                                      child: ListView.builder(
+                                        physics: const BouncingScrollPhysics(),
+                                        itemCount: unCompletedTasks.length,
+                                        itemBuilder: (context, index) {
+                                          return TaskCard(
+                                            task: unCompletedTasks[index],
+
+                                            deleteFunc: () {
+                                              tasksCubit.removeTask(
+                                                unCompletedTasks[index],
+                                              );
+                                            },
+
+                                            isCompleted: () {
+                                              tasksCubit.toggleIsCompleted(
+                                                unCompletedTasks[index],
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                            ],
+                          ),
+                          //   },
+                          // ),
                         ),
 
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 12),
+
+                        const Divider(color: Color(0xFFD7DEEA), thickness: 1),
+
+                        const SizedBox(height: 12),
 
                         Expanded(
-                          child: ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: unCompletedTasks.length,
-                            itemBuilder: (context, index) {
-                              return TaskCard(
-                                task: unCompletedTasks[index],
+                          // child: Consumer<TaskProvider>(
+                          //   builder: (context, taskProvider, child) {
+                          child: Column(
+                            children: [
+                              SectionHeader(
+                                icon: Icons.task_alt_rounded,
+                                title: 'Completed Tasks',
+                                count: completedTasks.length,
+                              ),
 
-                                deleteFunc: () {
-                                  tasksCubit.removeTask(
-                                    unCompletedTasks[index],
-                                  );
-                                },
-                                isCompleted: () {
-                                  tasksCubit.toggleIsCompleted(
-                                    unCompletedTasks[index],
-                                  );
-                                },
-                              );
-                            },
+                              const SizedBox(height: 10),
+
+                              completedTasks.isEmpty
+                                  ? Center(child: Text("no Tasks yet"))
+                                  : Expanded(
+                                      child: ListView.builder(
+                                        physics: const BouncingScrollPhysics(),
+                                        itemCount: completedTasks.length,
+                                        itemBuilder: (context, index) {
+                                          return TaskCard(
+                                            task: completedTasks[index],
+
+                                            deleteFunc: () {
+                                              tasksCubit.removeTask(
+                                                completedTasks[index],
+                                              );
+                                            },
+
+                                            isCompleted: () {
+                                              tasksCubit.toggleIsCompleted(
+                                                completedTasks[index],
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                            ],
                           ),
+                          //   },
+                          // ),
                         ),
                       ],
                     );
-                  }
-                  return const SizedBox();
-                },
-              ),
-            ),
+            }
 
-            const SizedBox(height: 12),
-
-            const Divider(color: Color(0xFFD7DEEA), thickness: 1),
-
-            const SizedBox(height: 12),
-
-            Expanded(
-              // child: Consumer<TaskProvider>(
-              //   builder: (context, taskProvider, child) {
-              child: BlocBuilder<TasksCubit, TaskState>(
-                builder: (context, state) {
-                  if (state is TasksLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is TasksError) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(state.error)));
-                  }
-                  if (state is TasksSuccess) {
-                    final completedTasks = state.tasks
-                        .where((task) => task.isCompleted)
-                        .toList();
-                    return Column(
-                      children: [
-                        SectionHeader(
-                          icon: Icons.task_alt_rounded,
-                          title: 'Completed Tasks',
-                          count: completedTasks.length,
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        Expanded(
-                          child: ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: completedTasks.length,
-                            itemBuilder: (context, index) {
-                              return TaskCard(
-                                task: completedTasks[index],
-
-                                deleteFunc: () {
-                                  tasksCubit.removeTask(completedTasks[index]);
-                                },
-                                isCompleted: () {
-                                  tasksCubit.toggleIsCompleted(
-                                    completedTasks[index],
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  return const SizedBox();
-                },
-              ),
-            ),
-          ],
+            return const SizedBox();
+          },
         ),
       ),
 
@@ -158,9 +180,19 @@ class TaskScreen extends StatelessWidget {
         backgroundColor: Color(0xFF2D63E8),
         foregroundColor: Colors.white,
         elevation: 4,
+
         onPressed: () {
-          tasksCubit.removeAllTasks();
+          showAlertWindow(
+            context,
+            "clear all tasks",
+            "clear all",
+            "are you sure !",
+            () {
+              tasksCubit.removeAllTasks();
+            },
+          );
         },
+
         child: const Icon(Icons.clear_all_rounded, size: 26),
       ),
     );

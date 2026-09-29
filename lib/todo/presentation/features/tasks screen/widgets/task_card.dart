@@ -76,8 +76,10 @@ class TaskCard extends StatelessWidget {
               onPressed: () => showAlertWindow(
                 context,
                 "Remove Task",
+                "Remove",
                 "Are you sure?",
                 deleteFunc,
+                
               ),
               tooltip: 'Delete',
 

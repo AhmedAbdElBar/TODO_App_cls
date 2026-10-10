@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_r5_s2/todo/presentation/features/add%20task/widgets/tasks_added_card.dart';
@@ -53,6 +54,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         centerTitle: true,
         backgroundColor: Color(0xFF0D1B4C),
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+            },
+            icon: Icon(Icons.logout),
+          ),
+        ],
       ),
       //--------------------------
       /// Body

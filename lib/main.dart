@@ -1,5 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_r5_s2/todo/presentation/features/auth/presentation/main%20page/mainScreen.dart';
+import 'package:flutter_r5_s2/firebase_options.dart';
 import 'todo/Data/local db/SQFLite db/sqflite_task_db.dart';
-import 'todo/presentation/features/add task/add_task_screen.dart';
 import 'todo/presentation/state Management/cubit/task_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +17,8 @@ void main() async {
   // await CartDb().initialDb();
   await SqfliteTaskDb().initialDb();
   // await HiveTasksDb.init();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiProvider(
       providers: [
@@ -32,9 +36,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AddTaskScreen(),
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: Mainscreen());
   }
 }

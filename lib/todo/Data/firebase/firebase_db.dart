@@ -38,6 +38,7 @@ class FirebaseDb {
 
   static Stream<List<TaskModel>> getTasks() {
     final taskStream = _taskCollectionRef.snapshots();
+
     Stream<List<TaskModel>> streamTasks = taskStream.map((querySnapshot) {
       final taskDocs = querySnapshot.docs;
       final List<TaskModel> tasks = taskDocs.map((doc) {

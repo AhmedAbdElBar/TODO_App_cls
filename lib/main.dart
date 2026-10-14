@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_r5_s2/todo/presentation/features/auth/presentation/main%20page/mainScreen.dart';
 import 'package:flutter_r5_s2/firebase_options.dart';
 import 'todo/Data/local db/SQFLite db/sqflite_task_db.dart';
@@ -19,6 +20,10 @@ void main() async {
   // await HiveTasksDb.init();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseMessaging.instance.requestPermission();
+  final messageToken = await FirebaseMessaging.instance.getToken();
+  print("messageToken");
+  print(messageToken);
   runApp(
     MultiProvider(
       providers: [

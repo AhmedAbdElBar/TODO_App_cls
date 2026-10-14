@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_r5_s2/todo/Data/firebase/firebase_db.dart';
 import 'package:flutter_r5_s2/todo/Data/remote%20db/http_db.dart';
